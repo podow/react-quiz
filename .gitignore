@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IDES & text editors
+.idea
+.vscode
+/nbproject/
+
+# lock files
+yarn.lock
+package.lock
