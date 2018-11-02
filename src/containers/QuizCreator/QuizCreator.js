@@ -5,8 +5,10 @@ import Input from "../../components/UI/Input/Input";
 import { createControl, validate, validateForm } from '../../form/FormFramework'
 import Select from "../../components/UI/Select/Select";
 
+import axios from 'axios'
+
 class QuizCreator extends Component {
-    createOptionControl (number) {
+    createOptionControl = number => {
         return createControl({
             label: `Вариант ${number}`,
             errorMessage: 'Значение не может быть пустым',
@@ -14,7 +16,7 @@ class QuizCreator extends Component {
         }, {
             required: true
         })
-    }
+    };
 
     createFormControls() {
         return {
@@ -78,10 +80,23 @@ class QuizCreator extends Component {
         })
     };
 
-    createQuizHandler = event => {
+    createQuizHandler = async event => {
         event.preventDefault();
-        
-        console.log(this.state.quiz);
+
+        try {
+            const response = await axios.post('https://react-quiz-62726.firebaseio.com/quizes.json', this.state.quiz);
+
+            if (response) {
+                this.setState({
+                    quiz: [],
+                    formControls: this.createFormControls(),
+                    rightAnswerId: 1,
+                    isFormValid: false
+                })
+            }
+        } catch (e) {
+            console.warn(e);
+        }
     };
 
     changeHandler = (value, controlName) => {
@@ -152,7 +167,7 @@ class QuizCreator extends Component {
                         <Button
                             type='primary'
                             onClick={this.addQuestionHandler}
-                            disabled={this.state.isFormValid}
+                            disabled={!this.state.isFormValid}
                         >
                             Добавить вопрос
                         </Button>
